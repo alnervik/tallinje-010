@@ -734,6 +734,9 @@ let busy = false;
 let hiddenPos = [];
 let hiddenIdx = 0;
 
+// Jump-mode state
+let jumpRoundCount = 0;
+
 // Color map
 const colorMap = {
   place:   { title: 't-primary', bar: 'c-primary' },
@@ -800,6 +803,7 @@ function startGame(m) {
   mode = m;
   streak = 0;
   busy = false;
+  jumpRoundCount = 0;
 
   const cm = colorMap[m];
   $('gameTitle').textContent = titleMap[m];
@@ -822,6 +826,7 @@ function closeDone() {
 function restartExercise() {
   closeDone();
   streak = 0;
+  jumpRoundCount = 0;
   updateProgress();
   generateRound();
 }
@@ -1049,8 +1054,11 @@ function genJump() {
     return 'show';
   });
 
-  // Draw arrow via SVG
-  drawJumpArrow(start, answer, forward);
+  // Only show the helper arrow on the very first round
+  if (jumpRoundCount === 0) {
+    drawJumpArrow(start, answer, forward);
+  }
+  jumpRoundCount++;
 
   // Answer buttons
   const distractors = new Set();
